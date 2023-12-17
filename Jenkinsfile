@@ -1,43 +1,39 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
+    agent { 
+        node {
+            label 'docker-agent-python'
             }
-        }
-
+      }
+    triggers {
+        pollSCM '* * * * *'
+    }
+    stages {
         stage('Build') {
             steps {
-                script {
-                    // Create and activate a virtual environment
-                    sh 'python3 -m venv venv'
-                    sh 'source venv/bin/activate'
-
-                    // Install dependencies using pip within the virtual environment
-                    sh 'pip3 install -r myapp/requirements.txt'
-                }
+                echo "Building.."
+                sh '''
+                cd myapp
+                pip install -r requirements.txt
+                '''
             }
         }
-
         stage('Test') {
             steps {
-                // Add your test steps here
+                echo "Testing.."
+                sh '''
+                cd myapp
+                python3 hello.py
+                python3 hello.py --name=Brad
+                '''
             }
         }
-
         stage('Deliver') {
             steps {
-                // Add your delivery steps here
+                echo 'Deliver....'
+                sh '''
+                echo "doing delivery stuff.."
+                '''
             }
-        }
-    }
-
-    post {
-        always {
-            // Deactivate the virtual environment after the pipeline
-            sh 'deactivate'
         }
     }
 }
