@@ -13,10 +13,10 @@ pipeline {
                 echo "Building.."
                 sh '''
                 cd myapp
-      // Create and activate a virtual environment
-                sh 'python3 -m venv venv'
-                sh 'source venv/bin/activate'
-                pip install -r requirements.txt
+      
+            // Create and activate a virtual environment
+                sh 'chmod +x myapp/build_script.sh'
+                sh 'myapp/build_script.sh'
                 '''
             }
         }
